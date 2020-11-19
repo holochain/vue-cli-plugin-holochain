@@ -1,0 +1,21 @@
+{
+  "name": "vue-cli-plugin-holochain",
+  "version": "0.1.3",
+  "description": "Holochain Vuetify Vue CLI Plugin Presets",
+  "author": "Philip Beadle <philip.beadle@holo.host>",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint --ext .js,.vue ."
+  },
+  "dependencies": {
+    "semver": "^7.1.2"
+  },
+  "peerDependenciesMeta": {
+    "sass-loader": {
+      "optional": true
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
