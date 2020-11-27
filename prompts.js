@@ -7,6 +7,10 @@ module.exports = [
       {
         name: 'Holochain Simple (A simple Holochain-Vuetify project)',
         value: 'simple'
+      },
+      {
+        name: 'Holochain Recursive Cards (Base for Kanban style apps)',
+        value: 'recursivecards'
       }
     ],
     default: 'simple'
