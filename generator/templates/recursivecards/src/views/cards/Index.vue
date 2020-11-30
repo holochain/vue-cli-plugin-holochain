@@ -11,6 +11,9 @@
             <v-toolbar dense dark>
               <v-toolbar-title>Columns & Cards</v-toolbar-title>
               <v-spacer></v-spacer>
+              <v-icon @click="addRootColumn" color="primary" dark>
+                mdi-table-column-plus-before
+              </v-icon>
               <v-icon @click="addColumn" color="primary" dark>
                 mdi-table-column-plus-after
               </v-icon>
@@ -27,7 +30,7 @@
               class="mx-auto fill-height"
               elevation="8"
             >
-              <column v-if="selectedColumn !== undefined" :column="selectedColumn" :key="`${selectedColumn.uuid}`" :isSelected="true">
+              <column v-if="selectedColumn !== undefined" :column="selectedColumn" :key="`${selectedColumn.uuid}`" :isSelected="true" @edit-column="editColumn">
                 <v-slide-group
                   v-model="model"
                   class="pa-2 fill-height"
@@ -38,7 +41,7 @@
                     :key="column.uuid"
                   >
                     <div class="pa-1">
-                      <column :column="column" :key="`${column.uuid}`">
+                      <column :column="column" :key="`${column.uuid}`" @edit-column="editColumn">
                       </column>
                     </div>
                   </v-slide-item>
@@ -72,7 +75,7 @@
         <v-card-title>
           <span class="headline">Column Details</span>
           <v-spacer></v-spacer>
-          Add to --> {{ selectedColumn.name }}
+          Parent --> {{ parentColumnName }}
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -122,6 +125,7 @@ export default {
     columnDrawerOpen: false,
     cwHeight: 700,
     selectedTreeItem: {},
+    parentColumnName: '',
     editingColumn: {
       uuid: uuidv4(),
       name: '',
@@ -145,10 +149,23 @@ export default {
   },
   methods: {
     ...mapActions('recursivecards', ['saveColumn', 'setSelectedColumn', 'saveCard']),
+    addRootColumn () {
+      this.editingColumn.parentColumn = '/'
+      this.parentColumnName = 'Root'
+      this.columnDrawerOpen = true
+    },
     addColumn () {
       if (this.selectedColumn.parentColumn) {
-        this.editingColumn.parentColumn = `${this.selectedColumn.parentColumn}${this.selectedColumn.name}/`
+        this.editingColumn.parentColumn = `${this.selectedColumn.parentColumn}${this.selectedColumn.uuid}/`
       }
+      this.parentColumnName = this.selectedColumn.name
+      this.columnDrawerOpen = true
+    },
+    editColumn (column) {
+      console.log('🚀 editColumn ~ column', column)
+      this.parentColumnName = column.parentColumn
+      this.editingColumn = { ...column }
+      this.action = 'update'
       this.columnDrawerOpen = true
     },
     setCodeWindowHeight () {
@@ -188,10 +205,22 @@ export default {
         this.editingColumn.order = this.selectedColumn.children.length + 1
       }
       this.saveColumn({ column: this.editingColumn, action: this.action })
-      if (this.selectedTreeItem.children) {
-        this.selectedTreeItem.children.push(this.editingColumn)
+      if (this.action === 'create') {
+        if (this.selectedTreeItem.children) {
+          this.selectedTreeItem.children.push(this.editingColumn)
+        } else {
+          this.treeItems.push(this.editingColumn)
+        }
       } else {
-        this.treeItems.push(this.editingColumn)
+        if (this.selectedTreeItem.children) {
+          this.selectedTreeItem.children = this.selectedTreeItem.children.map(column =>
+            column.uuid !== this.editingColumn.uuid ? column : { ...column, ...this.editingColumn }
+          )
+        } else {
+          this.treeItems = this.treeItems.map(column =>
+            column.uuid !== this.editingColumn.uuid ? column : { ...column, ...this.editingColumn }
+          )
+        }
       }
       this.closeCol()
     }

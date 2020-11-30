@@ -6,7 +6,10 @@
           {{column.name}}
         </v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn icon color="primary" @click="addCard">
+        <v-btn icon small color="primary" @click="$emit('edit-column', column)">
+          <v-icon>mdi-folder-edit-outline</v-icon>
+        </v-btn>
+        <v-btn icon small color="primary" @click="addCard">
           <v-icon>mdi-card-plus-outline</v-icon>
         </v-btn>
       </v-toolbar>
@@ -28,7 +31,7 @@
           @change="change"
         >
           <v-col v-for="card in cards" :key="`${card.uuid}`">
-            <card :card="card"/>
+            <card :card="card" @edit-card="editCard"/>
           </v-col>
         </draggable>
         </v-col>
@@ -47,10 +50,7 @@
       :width="this.$vuetify.breakpoint.lgAndUp ? 400 : 300"
     >
       <template v-slot:prepend>
-        <v-system-bar
-          window
-          dark
-        >
+        <v-system-bar window dark>
           <v-icon>mdi-message</v-icon>
           <span>10 unread messages</span>
           <v-spacer></v-spacer>
@@ -73,15 +73,8 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" class="pr-2">
-            <!-- <v-img
-                v-if="!isEditing"
-                height="300"
-                contain
-                :src="actionAgent.avatar"
-              >
-              </v-img> -->
               <v-image-input
-                  v-model="editingCard.preview"
+                v-model="editingCard.preview"
                 :image-quality="1"
                 clearable
                 image-format="jpeg,png"
@@ -164,13 +157,18 @@ export default {
         order: index
       }))
       reorderedCards.forEach(card => {
-        card.parentColumn = `${this.column.parentColumn}${this.column.name}/`
+        card.parentColumn = `${this.column.parentColumn}${this.column.uuid}/`
         this.saveCard({ card, action: 'update' })
       })
       console.log(reorderedCards)
     },
     addCard () {
-      this.editingCard.parentColumn = `${this.column.parentColumn}${this.column.name}/`
+      this.editingCard.parentColumn = `${this.column.parentColumn}${this.column.uuid}/`
+      this.cardDrawerOpen = true
+    },
+    editCard (card) {
+      this.editingCard = { ...card }
+      this.action = 'update'
       this.cardDrawerOpen = true
     },
     closeCd () {
@@ -185,13 +183,17 @@ export default {
       this.saveCard({ card: this.editingCard, action: this.action })
       if (this.action === 'create') {
         this.cards.push(this.editingCard)
+      } else {
+        this.cards = this.cards.map(card =>
+          card.uuid !== this.editingCard.uuid ? card : { ...card, ...this.editingCard }
+        )
       }
       this.closeCd()
     }
   },
   mounted () {
     this.isLoading = true
-    const parentColumn = `${this.column.parentColumn}${this.column.name}/`
+    const parentColumn = `${this.column.parentColumn}${this.column.uuid}/`
     this.$store.state.db.cards.where({ parentColumn }).toArray(entries => {
       const internalCards = entries.filter(entry => entry.cardType === 'card')
       if (internalCards !== undefined) {

@@ -7,11 +7,15 @@ module.exports = (api, options) => {
 
     return
   }
-
   const configuration = options.configuration
-
   try {
     api.render(`./templates/${configuration}`)
+  } catch (e) {
+    console.log(e, options)
+  }
+  const files = { './src/App.vue': `../generator/templates/${configuration}/src/App.vue` }
+  try {
+    api.render(files)
   } catch (e) {
     console.log(e, options)
   }
@@ -58,6 +62,9 @@ module.exports = (api, options) => {
 
     api.exitLog(`🍣  Successfully generated ${projectName} from the ${presetName}.\n`)
     api.exitLog(`Make sure you have holochain installed.`)
+    api.exitLog(`Install the Conductor Admin and Tests node modules`)
+    api.exitLog(`yarn install:all`)
+    api.exitLog(`Then run all the bits`)
     api.exitLog(`yarn start`)
   })
 }

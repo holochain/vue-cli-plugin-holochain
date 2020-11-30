@@ -12,34 +12,7 @@ export default {
     cards: [],
     columns: [],
     treeItems: [],
-    selectedColumn: {},
-    fieldNames: [
-      {
-        uuid: 'f6e97297-ec9e-4b6e-bb29-13a83c7a9066',
-        name: 'Full Name',
-        ui: 'text-field'
-      },
-      {
-        uuid: '43d60501-295c-4e21-b82f-4965d14fae36',
-        name: 'Avatar',
-        ui: 'thumbnail'
-      },
-      {
-        uuid: 'a9a814d6-ec81-4613-9fa3-614ed45bd6ce',
-        name: 'Bio',
-        ui: 'text-area'
-      },
-      {
-        uuid: 'b24da2ce-b0c0-4c5e-8894-41b9bf1088c2',
-        name: 'Handle',
-        ui: 'text-field'
-      },
-      {
-        uuid: '9a23b8d6-fc2d-4f45-a81b-4e416083aeda',
-        name: 'Profile Picture',
-        ui: 'image'
-      }
-    ]
+    selectedColumn: {}
   },
   actions: {
     async initialise ({ commit }) {
@@ -61,7 +34,7 @@ export default {
       })
     },
     setSelectedColumn ({ rootState, commit }, payload) {
-      const parentColumn = `${payload.parentColumn}${payload.name}/`
+      const parentColumn = `${payload.parentColumn}${payload.uuid}/`
       rootState.db.cards.where({ parentColumn }).toArray(entries => {
         payload.children = entries.map(entry => {
           entry.key = `${entry.uuid}`
@@ -78,17 +51,38 @@ export default {
       column.cardType = 'column'
       column.preview = ''
       column.parent = 'Cards'
-      rootState.db.cards.put(column)
       if (payload.action === 'create') {
+        rootState.db.cards.put(column)
         commit('createColumn', column)
+        dispatch('holochainSaveCard', { card: column })
       } else {
-        commit('updateColumn', column)
+        rootState.db.cards.put(column)
+        dispatch('holochainSaveCard', { card: column })
+        // rootState.db.cards.get({ uuid: column.uuid })
+        //   .then(col => {
+        //     rootState.db.cards.put(column)
+        //     console.log(`${col.parentColumn}${col.uuid}/`)
+        //     rootState.db.cards.where('parentColumn').startsWith(`${col.parentColumn}${col.uuid}`).toArray(cards => {
+        //       console.log('🚀 ~ file: recursivecards.store.js ~ line 93 ~ saveColumn ~ cards', cards)
+        //       cards.forEach(card => {
+        //         card.parentColumn = card.parentColumn.replace(`${col.parentColumn}${col.uuid}`, `${column.parentColumn}${column.uuid}`)
+        //         console.log('🚀 ~ file: recursivecards.store.js ~ line 98 ~ rootState.db.cards.where ~ card', card)
+        //         rootState.db.cards.put(card)
+        //         dispatch('holochainSaveCard', { card: card })
+        //         if (card.type === 'column') {
+        //           commit('updateColumn', column)
+        //         } else {
+        //           commit('updateCard', card)
+        //         }
+        //       })
+        //     })
+        //   })
       }
-      dispatch('holochainSaveCard', { card: column })
     },
     fetchCards ({ rootState, state, commit }) {
       rootState.db.cards.toArray(cards => {
         commit('setCards', cards)
+        const start = Date.now()
         rootState.hcClient
           .callZome({
             cap: null,
@@ -99,8 +93,9 @@ export default {
             payload: { parent: 'Cards' }
           })
           .then(result => {
+            console.log('time to list ', Date.now() - start)
             result.cards.forEach(card => {
-              rootState.db.cards.put(card).then((result) => console.log(result))
+              rootState.db.cards.put(card)
             })
             commit('setCards', result.cards)
           })
@@ -111,16 +106,13 @@ export default {
       card.cardType = 'card'
       card.parent = 'Cards'
       rootState.db.cards.put(card)
-      if (payload.action === 'create') {
-        commit('createCard', card)
-      } else {
-        commit('updateCard', card)
-      }
       dispatch('holochainSaveCard', { card })
     },
     holochainSaveCard ({ rootState, state, commit }, payload) {
+      let start = Date.now()
       const card = payload.card
       if (card.entryHash) {
+        console.log('delete start', Date.now())
         rootState.hcClient
           .callZome({
             cap: null,
@@ -130,7 +122,9 @@ export default {
             provenance: state.agentPubKey,
             payload: card
           })
+          .then(() => console.log('time to delete ', Date.now() - start))
       }
+      start = Date.now()
       rootState.hcClient
         .callZome({
           cap: null,
@@ -141,6 +135,8 @@ export default {
           payload: card
         })
         .then(committedCard => {
+          console.log('🚀 ~ file: recursivecards.store.js ~ line 138 ~ holochainSaveCard ~ committedCard', committedCard)
+          console.log('time to create ', Date.now() - start)
           rootState.db.cards.put(committedCard)
           if (payload.action === 'create') {
             commit('createCard', committedCard)

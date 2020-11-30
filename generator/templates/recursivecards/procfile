@@ -1,4 +1,4 @@
-conductor: holochain -c ./conductor/developer.yaml
+conductor: RUST_LOG='[debug]=debug,[]=error' holochain -c ./conductor/developer.yaml
 admin: yarn serve:admin
 agent1: yarn serve:40001
 agent2: yarn serve:40002

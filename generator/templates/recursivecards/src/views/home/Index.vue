@@ -13,7 +13,7 @@
       </v-avatar>
       <v-toolbar-title>
         <v-btn class="title font-weight-black headline" text to="cards">
-          Kanban
+          Recursive Columns & Cards
         </v-btn>
       </v-toolbar-title>
       <v-spacer></v-spacer>
@@ -53,7 +53,7 @@
                     :class="[$vuetify.breakpoint.smAndDown ? 'display-3': 'display-4']"
                     class="font-weight-black"
                   >
-                    Kanban
+                    Columns & Cards
                   </span>
                 </v-col>
                 <v-btn
@@ -73,7 +73,7 @@
     <section id="about-me">
       <div class="py-12"></div>
       <v-container class="text-center">
-        <h2 class="display-2 font-weight-bold mb-3">Kanban</h2>
+        <h2 class="display-2 font-weight-bold mb-3">Columns & Cards</h2>
         <v-responsive
           class="mx-auto mb-8"
           width="56"
@@ -85,9 +85,9 @@
           class="mx-auto title font-weight-light mb-8"
           max-width="720"
         >
-          This Vuetify web app, Kanban, is setup to show you how easy it is to build a Holochain application. Kanban is a starting point for, as you guessed, recursivecards apps that don't require a complicated navigation system or other fancy layouts. Kanban shows you how to use Vue Router, Vuex and Holochain.
-          It also shows you how to secure your routes and check to make sure the person using Kanban has a Holochain Public Agent Key or has logged in to Holo.
-          Kanban also uses dexie.js to store information in the browser database, IndexDB. This speeds up your even more enabling you to retrieve data immediately from IndexDB and then let the data be updated by Holochain. This is known as the stale-while-revalidate (SWR) pattern.
+          This Vuetify web app, Columns & Cards, is setup to show you how easy it is to build a Holochain application. Columns & Cards is a starting point for, as you guessed, recursivecards apps that don't require a complicated navigation system or other fancy layouts. Columns & Cards shows you how to use Vue Router, Vuex and Holochain.
+          It also shows you how to secure your routes and check to make sure the person using Columns & Cards has a Holochain Public Agent Key or has logged in to Holo.
+          Columns & Cards also uses dexie.js to store information in the browser database, IndexDB. This speeds up your even more enabling you to retrieve data immediately from IndexDB and then let the data be updated by Holochain. This is known as the stale-while-revalidate (SWR) pattern.
           If your app needs more complicated layouts try the Holochain Kitchen Sink option.
         </v-responsive>
         <h2 class="display-2 font-weight-bold mb-3">What's Next?</h2>
@@ -102,7 +102,7 @@
           class="mx-auto title font-weight-light mb-8"
           max-width="720"
         >
-          Modify this generated application to your requirements. The name of this app, Kanban, should be changed to your app name for example, Holodex. The data type or entry type as we call it at Holochain for Kanban is called "card" :) So update "card" to your entry type, for example "contact".
+          Modify this generated application to your requirements. The name of this app, Columns & Cards, should be changed to your app name for example, Holodex. The data type or entry type as we call it at Holochain for Columns & Cards is called "card" :) So update "card" to your entry type, for example "contact".
           For your first few apps do this manually throughout the code base so you get familiar with where cards are (see what I did there ;))
           Or you can grep & sed.
         </v-responsive>
