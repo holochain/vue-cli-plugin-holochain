@@ -1,0 +1,10 @@
+{
+  "name": "ledger",
+  "uuid": "",
+  "properties": null,
+  "zomes": {
+    "ledger": {
+      "wasm_path": "../target/wasm32-unknown-unknown/release/ledger.wasm"
+    }
+  }
+}

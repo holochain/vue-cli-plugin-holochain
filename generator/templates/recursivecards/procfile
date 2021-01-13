@@ -1,6 +1,0 @@
-conductor: RUST_LOG='[debug]=debug,[]=error' holochain -c ./conductor/developer.yaml
-admin: yarn serve:admin
-agent1: yarn serve:40001
-agent2: yarn serve:40002
-agent3: yarn serve:40003
-agent4: yarn serve:40004
