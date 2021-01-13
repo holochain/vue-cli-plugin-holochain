@@ -1,10 +1,10 @@
 const routes = [
   {
-    path: '/',
+    path: '/ledger',
     component: () => import('@/layouts/drawer/Index.vue'),
     children: [
       {
-        path: 'ledger-invoices',
+        path: 'invoices',
         name: 'Invoices',
         meta: { requiresAuth: true },
         components: {
@@ -13,7 +13,7 @@ const routes = [
         }
       },
       {
-        path: 'ledger-expenses',
+        path: 'expenses',
         name: 'Expenses',
         meta: { requiresAuth: true },
         components: {
@@ -22,7 +22,7 @@ const routes = [
         }
       },
       {
-        path: 'ledger-clients',
+        path: 'clients',
         name: 'Clients',
         meta: { requiresAuth: true },
         components: {
@@ -31,7 +31,7 @@ const routes = [
         }
       },
       {
-        path: 'ledger-contacts',
+        path: 'contacts',
         name: 'Contacts',
         meta: { requiresAuth: true },
         components: {

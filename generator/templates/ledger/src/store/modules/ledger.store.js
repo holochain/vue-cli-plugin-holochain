@@ -39,7 +39,6 @@ export default {
       AppWebsocket.connect(`ws://localhost:${localStorage.getItem('port')}`)
         .then(socket => {
           commit('hcClient', socket)
-          dispatch('ledger/fetchClients')
         })
       state.db.consultants
         .where('agentPubKey')
@@ -78,6 +77,11 @@ export default {
     saveClient ({ state, commit, dispatch }, payload) {
       const client = { ...payload.client, path: 'Clients' }
       state.db.clients.put(client)
+      if (payload.action === 'create') {
+        commit('createClient', client)
+      } else {
+        commit('updateClient', client)
+      }
       if (client.entryHash) {
         state.hcClient
           .callZome({
@@ -100,11 +104,8 @@ export default {
         })
         .then(committedClient => {
           committedClient.entryHash = base64.bytesToBase64(committedClient.entryHash)
-          if (payload.action === 'create') {
-            commit('createClient', committedClient)
-          } else {
-            commit('updateClient', committedClient)
-          }
+          state.db.clients.put(committedClient)
+          commit('updateClient', committedClient)
         })
     },
     deleteClient ({ state, commit }, payload) {

@@ -127,10 +127,10 @@ export default {
     selectedItem: 0,
     mini: false,
     items: [
-      { text: 'Invoices', icon: '🧾', to: 'ledger-invoices', btn: 'New Invoice' },
-      { text: 'Expenses', icon: 'mdi-account-cash-outline', to: 'ledger-expenses', btn: 'New Expense' },
-      { text: 'Clients', icon: 'mdi-office-building-outline', to: 'ledger-clients', btn: 'New Client' },
-      { text: 'Contacts', icon: 'mdi-account-group-outline', to: 'ledger-contacts', btn: 'New Contact' }
+      { text: 'Invoices', icon: '🧾', to: 'invoices', btn: 'New Invoice' },
+      { text: 'Expenses', icon: 'mdi-account-cash-outline', to: 'expenses', btn: 'New Expense' },
+      { text: 'Clients', icon: 'mdi-office-building-outline', to: 'clients', btn: 'New Client' },
+      { text: 'Contacts', icon: 'mdi-account-group-outline', to: 'contacts', btn: 'New Contact' }
     ],
     settingsDialog: false,
     profile: {}

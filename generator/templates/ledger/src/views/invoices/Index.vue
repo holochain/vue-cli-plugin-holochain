@@ -1,5 +1,5 @@
 <template>
-  <v-container class="fill-height text-center" tag="section">
+  <v-container class="fill-height" tag="section">
 <v-row no-gutters class="fill-height">
       <v-col cols="6" class="pr-3">
         <v-card
@@ -44,7 +44,7 @@ export default {
   created () {
     if (localStorage.getItem('agentPubKey')) {
       this.holo = false
-      this.$store.dispatch('ledger/initialise')
+      this.$store.dispatch('ledger/initialise').then(this.$store.dispatch('ledger/fetchClients'))
     }
   }
 }
