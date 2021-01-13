@@ -10,12 +10,6 @@ module.exports = (api, options) => {
     console.log(e, options)
   }
 
-  api.extendPackage({
-    scripts: {
-      'postinstall': 'cd dna/ledger/tests && yarn install'
-    }
-  })
-
   api.onCreateComplete(() => {
     const presetName = `Holochain Ledger Module`
     const projectName = api.rootOptions.projectName
