@@ -7,7 +7,7 @@
     dark
     class="overflow-auto"
     left
-    width="250"
+    width="200"
     :mini-variant.sync="mini"
     permanent
   >
